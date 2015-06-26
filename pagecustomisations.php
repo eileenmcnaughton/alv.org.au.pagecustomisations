@@ -123,6 +123,59 @@ function pagecustomisations_civicrm_alterSettingsFolders(&$metaDataFolders = NUL
 }
 
 /**
+ * Implements hook_civicrm_buildForm().
+ *
+ * Set a default value for an event price set field.
+ *
+ * @param string $formName
+ * @param CRM_Core_Form $form
+ */
+function pagecustomisations_civicrm_buildForm($formName, &$form) {
+  $whiteList = array(
+    'CRM_Contribute_Form_Contribution_Main',
+    'CRM_Contribute_Form_Contribution_ThankYou',
+  );
+  if (!in_array($formName, $whiteList)) {
+    return;
+  }
+  $fileName = 'blah';
+  CRM_Core_Resources::singleton()->addScript(file_get_contents($fileName));
+
+  $defaults = array();
+  foreach (_pagecustomisations_get_fields($form) as $field) {
+    $urlValue = CRM_Utils_Request::retrieve($field, 'String');
+    if (!is_null($urlValue)) {
+      $defaults[$field] = $urlValue;
+    }
+  }
+
+  $form->setDefaults($defaults);
+}
+
+/**
+ * Get a list of fields on the form.
+ *
+ * These may need to be filtered?
+ *
+ * @param $form
+ *
+ * @return array
+ */
+function _pagecustomisations_get_fields($form) {
+  return array_keys($form->_elementIndex );
+}
+
+/**
+ * Alter amount options.
+ *
+ * @param $pageType
+ * @param $form
+ * @param $amount
+ */
+function pagecustomisations_civicrm_buildAmount($pageType, &$form, &$amount) {
+}
+
+/**
  * Functions below this ship commented out. Uncomment as required.
  *
 
